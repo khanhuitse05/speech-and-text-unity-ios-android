@@ -8,7 +8,7 @@ Speed to text in Unity iOS use Native Speech Recognition
 
   Note: Requires Xcode8 or higher. Target iOS 10.0
   
-  Detail speech API: /reference/speech
+  Detail speech API: https://developer.apple.com/reference/speech
 
 ## Tutorial
 More detail: https://pingyolo.wordpress.com/2016/07/26/speech-to-text-in-unity-ios/
