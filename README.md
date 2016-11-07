@@ -2,6 +2,7 @@
 Speed to text in Unity iOS use Native Speech Recognition
 
 ## Tutorial
+More detail: https://pingyolo.wordpress.com/2016/07/26/speech-to-text-in-unity-ios/
 
 * Step 1: Build Sample project
 
