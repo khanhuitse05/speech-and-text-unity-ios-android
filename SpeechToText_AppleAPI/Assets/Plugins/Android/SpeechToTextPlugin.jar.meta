@@ -1,13 +1,16 @@
 fileFormatVersion: 2
-guid: 14fae372c28a08f439cdbbb5c41837e6
-timeCreated: 1478489159
-licenseType: Free
+guid: 794bf5c3f66df554f95bfcf34c373792
+timeCreated: 1459850215
+licenseType: Pro
 PluginImporter:
   serializedVersion: 1
   iconMap: {}
   executionOrder: {}
   isPreloaded: 0
   platformData:
+    Android:
+      enabled: 1
+      settings: {}
     Any:
       enabled: 0
       settings: {}
@@ -15,9 +18,6 @@ PluginImporter:
       enabled: 0
       settings:
         DefaultValueInitialized: true
-    iOS:
-      enabled: 1
-      settings: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
