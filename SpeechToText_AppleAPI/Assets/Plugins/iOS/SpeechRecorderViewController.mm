@@ -6,17 +6,15 @@
 #import <Speech/Speech.h>
 
 @interface SpeechRecorderViewController ()
-{
-    
+{    
     // Speech recognize
     SFSpeechRecognizer *speechRecognizer;
     SFSpeechAudioBufferRecognitionRequest *recognitionRequest;
     SFSpeechRecognitionTask *recognitionTask;
     // Record speech using audio Engine
     AVAudioInputNode *inputNode;
-    AVAudioEngine *audioEngine;
-	
-	NSString * LanguageCode=@"ko-KR";
+    AVAudioEngine *audioEngine;	
+	NSString * LanguageCode;
     
 }
 @end
@@ -27,8 +25,8 @@
 - (void)InitSpeech{
     
     audioEngine = [[AVAudioEngine alloc] init];
-    
-    NSLocale *local =[[NSLocale alloc] initWithLocaleIdentifier:@"ko-KR"];
+    LanguageCode = @"ko-KR";
+    NSLocale *local =[[NSLocale alloc] initWithLocaleIdentifier:LanguageCode];
     speechRecognizer = [[SFSpeechRecognizer alloc] initWithLocale:local];
     
     for (NSLocale *locate in [SFSpeechRecognizer supportedLocales]) {
@@ -64,7 +62,9 @@
 }
 - (void)SettingSpeech: (const char *) _language 
 {	
-	LanguageCode = [NSString stringWithUTF8String:_language];
+    LanguageCode = [NSString stringWithUTF8String:_language];
+    NSLocale *local =[[NSLocale alloc] initWithLocaleIdentifier:LanguageCode];
+    speechRecognizer = [[SFSpeechRecognizer alloc] initWithLocale:local];
 }
 // recording
 - (void)startRecording {
@@ -100,8 +100,9 @@
         recognitionTask =[speechRecognizer recognitionTaskWithRequest:recognitionRequest resultHandler:^(SFSpeechRecognitionResult * _Nullable result, NSError * _Nullable error) {
             if (result != nil) {
                 NSString *transcriptText = result.bestTranscription.formattedString;
-                [self CallbackSpeechToText: [transcriptText UTF8String]];
-                [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];            }
+                UnitySendMessage("SpeechToText", "CallbackSpeechToText", [transcriptText UTF8String]);
+                [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
+            }
             else {
                 [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
                 recognitionTask = nil;
@@ -118,7 +119,7 @@
 
 @end
 extern "C"{
-    ViewController *vc = [[ViewController alloc] init];    
+    SpeechRecorderViewController *vc = [[SpeechRecorderViewController alloc] init];
     void _TAG_startRecording(){
         [vc startRecording];
     }
@@ -129,6 +130,6 @@ extern "C"{
         [vc stopRecording];
     }  
 	void _TAG_SettingSpeech(const char * _language){
-        [su SettingSpeech:_language pitchSpeak:_pitch rateSpeak:_rate];
+        [vc SettingSpeech:_language];
     } 	
 }

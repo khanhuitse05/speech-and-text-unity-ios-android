@@ -11,8 +11,8 @@ public class TextToSpeech : MonoBehaviour
 
     [Range(0.5f, 2)]
     public float pitch = 1f; //[0.5 - 2] Default 1
-    [Range(0.5f, 2)]
-    public float rate = 1f; //[min - max] maybe [0.5 - 2]
+    [Range(0, 1)]
+    public float rate = 1f; //[min - max] android:[0.5 - 2] iOS:[0 - 1]
     public void init()
     {
 #if UNITY_EDITOR
@@ -32,7 +32,7 @@ public class TextToSpeech : MonoBehaviour
         _TAG_SettingSpeak(language, pitch, rate);
 #elif UNITY_ANDROID
         AndroidJavaClass javaUnityClass = new AndroidJavaClass("com.starseed.speechtotext.Bridge");
-        javaUnityClass.CallStatic("SettingTextToSpeed", language, pitch, rate);
+        javaUnityClass.CallStatic("SettingTextToSpeed", language, pitch, rate + 0.5f);
 #endif
     }
     public void StartSpeak(string _message)

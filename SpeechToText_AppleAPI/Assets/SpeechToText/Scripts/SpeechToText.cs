@@ -56,7 +56,7 @@ public class SpeechToText : MonoBehaviour
     private static extern void _TAG_InitSpeech();
 
     [DllImport("__Internal")]
-    private static extern void _TAG_SettingSpechd(string _language);    
+    private static extern void _TAG_SettingSpeech(string _language);    
 #endif
 
     public void CallbackSpeechToText(string _message)
