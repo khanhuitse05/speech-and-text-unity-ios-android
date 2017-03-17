@@ -10,8 +10,11 @@ Speed to text in Unity iOS use Native Speech Recognition
 ## Tutorial Config in Xcode
 * Requires Xcode8 or higher. Target iOS 10.0
 * Add farmwork
+
       - speech.farmwork
       - AVFoundation.framework
+      
 * Add permission
-      - Privacy – Microphone Usage Description
+
+      - Privacy – Microphone Usage Description      
       - Privacy – Speech Recognition Usage Description
