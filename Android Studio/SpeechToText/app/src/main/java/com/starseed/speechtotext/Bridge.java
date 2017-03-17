@@ -6,7 +6,7 @@ import android.speech.RecognizerIntent;
 import com.unity3d.player.UnityPlayer;
 
 /**
- * Created by DuyThai on 4/6/2016.
+ * Created by Starseed
  */
 public class Bridge {
 
