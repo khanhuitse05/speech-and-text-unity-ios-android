@@ -1,5 +1,5 @@
-# SpeechToText_UnityIOS_AppleAPI
-Speed to text in Unity iOS use Native Speech Recognition
+# SpeechAndText Unity iOS Android
+Speed and text in Unity iOS Android
 
 ## Native Speech and Text
 * SpeechToText Android: https://developer.android.com/reference/android/speech/package-summary.html
