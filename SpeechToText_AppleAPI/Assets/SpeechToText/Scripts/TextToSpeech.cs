@@ -7,23 +7,16 @@ using System;
 public class TextToSpeech : MonoBehaviour
 {
 
-    public Action<string> onMessage;
+    public Action onStartCallBack;
+    public Action onDoneCallback;
+    public Action<string> onSpeakRangeCallback;
 
     [Range(0.5f, 2)]
     public float pitch = 1f; //[0.5 - 2] Default 1
-    [Range(0, 1)]
+    [Range(0.5f, 2)]
     public float rate = 1f; //[min - max] android:[0.5 - 2] iOS:[0 - 1]
-    public void init()
-    {
-#if UNITY_EDITOR
-#elif UNITY_IPHONE
-        _TAG_InitSpeak();
-#elif UNITY_ANDROID
-        AndroidJavaClass javaUnityClass = new AndroidJavaClass("com.starseed.speechtotext.Bridge");
-        javaUnityClass.CallStatic("InitTextToSpeed");
-#endif
-    }
-    public void SettingSpeak(string language, float _pitch, float _rate)
+
+    public void Setting(string language, float _pitch, float _rate)
     {
         pitch = _pitch;
         rate = _rate;
@@ -32,7 +25,7 @@ public class TextToSpeech : MonoBehaviour
         _TAG_SettingSpeak(language, pitch, rate);
 #elif UNITY_ANDROID
         AndroidJavaClass javaUnityClass = new AndroidJavaClass("com.starseed.speechtotext.Bridge");
-        javaUnityClass.CallStatic("SettingTextToSpeed", language, pitch, rate + 0.5f);
+        javaUnityClass.CallStatic("SettingTextToSpeed", language, pitch, rate);
 #endif
     }
     public void StartSpeak(string _message)
@@ -55,18 +48,53 @@ public class TextToSpeech : MonoBehaviour
         javaUnityClass.CallStatic("StopTextToSpeed");
 #endif
     }
-    public void CallbackTextToSpeech(string _message)
+
+    public void onSpeechRange(string _message)
     {
-        if (_message != null)
-            onMessage(_message);
+        if (onSpeakRangeCallback != null && _message != null)
+        {
+            onSpeakRangeCallback(_message);
+        }
+    }
+    public void onStart(string _message)
+    {
+        if (onStartCallBack != null)
+            onStartCallBack();
+    }
+    public void onDone(string _message)
+    {
+        if (onDoneCallback != null)
+            onDoneCallback();
+    }
+    public void onError(string _message)
+    {
+    }
+    public void onMessage(string _message)
+    {
+
+    }
+    /** Denotes the language is available for the language by the locale, but not the country and variant. */
+    public const int LANG_AVAILABLE = 0;
+    /** Denotes the language data is missing. */
+    public const int LANG_MISSING_DATA = -1;
+    /** Denotes the language is not supported. */
+    public const int LANG_NOT_SUPPORTED = -2;
+    public void onSettingResult(string _params)
+    {
+        int _error = int.Parse(_params);
+        string _message = "";
+        if (_error == LANG_MISSING_DATA || _error == LANG_NOT_SUPPORTED)
+        {
+            _message = "This Language is not supported";
+        }
         else
-            onMessage("");
+        {
+            _message = "This Language valid";
+        }
+        Debug.Log(_message);
     }
 
 #if UNITY_IPHONE
-    [DllImport("__Internal")]
-    private static extern void _TAG_InitSpeak();
-
     [DllImport("__Internal")]
     private static extern void _TAG_StartSpeak(string _message);
 

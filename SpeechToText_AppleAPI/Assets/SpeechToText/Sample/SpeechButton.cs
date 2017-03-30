@@ -37,25 +37,14 @@ public class SpeechButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void OnPointerDown(PointerEventData eventData)
     {
-#if UNITY_EDITOR
         effect.SetActive(true);
         scale = 1;
-#endif
-#if UNITY_IPHONE
-        effect.SetActive(true);
-        scale = 1;
-#endif
         sample.StartRecording();
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-#if UNITY_EDITOR
         effect.SetActive(false);
         sample.StopRecording();
-#elif UNITY_IPHONE
-        effect.SetActive(false);
-        sample.StopRecording();
-#endif
     }
 }

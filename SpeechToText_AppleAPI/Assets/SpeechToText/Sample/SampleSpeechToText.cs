@@ -29,8 +29,6 @@ public class SampleSpeechToText : MonoBehaviour
 
     void Start()
     {
-        speak.init();
-        speech.init();
         List<string> _listLanguage = new List<string>();
         for (int i = 0; i < listLanguage.Count; i++)
         {
@@ -42,15 +40,15 @@ public class SampleSpeechToText : MonoBehaviour
         dropSpeak.value = 0;
         sliderPitch.value = 1;
         sliderRate.value = 1;
+
         SaveSetting();
 
-        txtResult.text = "Tap to Speech";
-#if UNITY_IPHONE
         txtResult.text = "Tap and Hold to Speech";
-#endif
+
         loading.SetActive(false);
-        speech.onResult = OnResultSpeech;
-        speak.onMessage = OnMessageTextToSpeak;
+        speech.onResultCallback = OnResultSpeech;
+        txtStatus.text = txtStatus.text + " / Unity Init Finish";
+
     }
 
     public void StartRecording()
@@ -68,17 +66,16 @@ public class SampleSpeechToText : MonoBehaviour
 #else
         speech.StopRecording();
 #endif
-#if UNITY_IPHONE
         loading.SetActive(true);
-#endif
     }
-
     void OnResultSpeech(string _data)
     {
-#if UNITY_IPHONE
         loading.SetActive(false);
-#endif
         txtResult.text = _data;
+    }
+    void OnMessageSpeech(string _message)
+    {
+        txtStatus.text = txtStatus.text + " / " + _message;
     }
     public void OnClickSpeak()
     {
@@ -88,10 +85,6 @@ public class SampleSpeechToText : MonoBehaviour
     {
         speak.StopSpeak();
     }
-    public void OnMessageTextToSpeak(string _message)
-    {
-        txtStatus.text = _message;
-    }
     public void OnClickSetting()
     {
         setting.SetActive(true);
@@ -99,8 +92,8 @@ public class SampleSpeechToText : MonoBehaviour
     public void SaveSetting()
     {
         setting.SetActive(false);
-        speak.SettingSpeak(listLanguage[dropSpeak.value].code, sliderPitch.value, sliderRate.value);
-        speech.SettingRecording(listLanguage[dropSpeech.value].code);
+        speak.Setting(listLanguage[dropSpeak.value].code, sliderPitch.value, sliderRate.value);
+        speech.Setting(listLanguage[dropSpeech.value].code);
         txtQuestion.text = listLanguage[dropSpeak.value].example;
     }
 }

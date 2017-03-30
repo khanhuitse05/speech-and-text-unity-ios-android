@@ -15,21 +15,17 @@
 
 - (id)init
 {
-	self = [super init];
-	return self;
-}
-- (void)InitSpeak
-{	
+	self = [super init];	
 	speechSynthesizer = [[AVSpeechSynthesizer alloc] init];
     speechSynthesizer.delegate = self;
-    UnitySendMessage("TextToSpeech", "CallbackTextToSpeech", "Init Success");
+	return self;
 }
 - (void)SettingSpeak: (const char *) _language pitchSpeak: (float)_pitch rateSpeak:(float)_rate
 {	
 	LanguageCode = [NSString stringWithUTF8String:_language];
 	pitch = _pitch;
     rate = _rate;
-    UnitySendMessage("TextToSpeech", "CallbackTextToSpeech", "Setting Success");
+    UnitySendMessage("TextToSpeech", "onMessage", "Setting Success");
 }
 - (void)StartSpeak: (const char *) _text
 {
@@ -58,28 +54,25 @@ willSpeakRangeOfSpeechString:(NSRange)characterRange
                 utterance:(AVSpeechUtterance *)utterance
 {
     NSString *subString = [speakText substringWithRange:characterRange];
-    UnitySendMessage("TextToSpeech", "CallbackTextToSpeech", [subString UTF8String]);
+    UnitySendMessage("TextToSpeech", "onSpeechRange", [subString UTF8String]);
 }
 
-- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer
-  didStartSpeechUtterance:(AVSpeechUtterance *)utterance
+- (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer 
+didStartSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    UnitySendMessage("TextToSpeech", "CallbackTextToSpeech", "onStart");
+    UnitySendMessage("TextToSpeech", "onStart", "onStart");
 }
 
 - (void)speechSynthesizer:(AVSpeechSynthesizer *)synthesizer
  didFinishSpeechUtterance:(AVSpeechUtterance *)utterance
 {
-    UnitySendMessage("TextToSpeech", "CallbackTextToSpeech", "onDone");
+    UnitySendMessage("TextToSpeech", "onDone", "onDone");
 }
 
 @end
 
 extern "C"{
     SpeechUtteranceViewController *su = [[SpeechUtteranceViewController alloc] init];  
-	void _TAG_InitSpeak(){
-        [su InitSpeak];
-    } 	
     void _TAG_StartSpeak(const char * _text){
         [su StartSpeak:_text];
     }

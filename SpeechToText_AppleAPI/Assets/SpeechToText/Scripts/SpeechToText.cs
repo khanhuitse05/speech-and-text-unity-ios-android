@@ -6,17 +6,9 @@ using System;
 
 public class SpeechToText : MonoBehaviour
 {
-    public Action<string> onResult;
-    
-    public void init()
-    {
-#if UNITY_EDITOR
-#elif UNITY_IPHONE
-        _TAG_InitSpeech();
-#elif UNITY_ANDROID
-#endif
-    }
-    public void SettingRecording(string _language)
+    public Action<string> onResultCallback;
+
+    public void Setting(string _language)
     {
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
@@ -32,8 +24,16 @@ public class SpeechToText : MonoBehaviour
 #elif UNITY_IPHONE
         _TAG_startRecording();
 #elif UNITY_ANDROID
-        AndroidJavaClass javaUnityClass = new AndroidJavaClass("com.starseed.speechtotext.Bridge");
-        javaUnityClass.CallStatic("OpenSpeechToText", _message);
+        if (isShowPopupAndroid)
+        {
+            AndroidJavaClass javaUnityClass = new AndroidJavaClass("com.starseed.speechtotext.Bridge");
+            javaUnityClass.CallStatic("OpenSpeechToText", _message);
+        }
+        else
+        {
+            AndroidJavaClass javaUnityClass = new AndroidJavaClass("com.starseed.speechtotext.Bridge");
+            javaUnityClass.CallStatic("StartRecording");
+        }
 #endif
     }
     public void StopRecording()
@@ -42,6 +42,11 @@ public class SpeechToText : MonoBehaviour
 #elif UNITY_IPHONE
         _TAG_stopRecording();
 #elif UNITY_ANDROID
+        if (isShowPopupAndroid == false)
+        {
+            AndroidJavaClass javaUnityClass = new AndroidJavaClass("com.starseed.speechtotext.Bridge");
+            javaUnityClass.CallStatic("StopRecording");
+        }
 #endif
     }
 
@@ -53,17 +58,122 @@ public class SpeechToText : MonoBehaviour
     private static extern void _TAG_stopRecording();
 
     [DllImport("__Internal")]
-    private static extern void _TAG_InitSpeech();
-
-    [DllImport("__Internal")]
     private static extern void _TAG_SettingSpeech(string _language);    
 #endif
 
-    public void CallbackSpeechToText(string _message)
+    public void onMessage(string _message)
     {
-        if (_message != null)
-            onResult(_message);
-        else
-            onResult("");
     }
+    public void onErrorMessage(string _message)
+    {
+        Debug.Log(_message);
+    }
+    /** Called when recognition results are ready. */
+    public void onResults(string _results)
+    {
+        if (onResultCallback != null)
+            onResultCallback(_results);
+    }
+
+    #region Android STT custom
+#if UNITY_ANDROID
+    #region Error Code
+    /** Network operation timed out. */
+    public const int ERROR_NETWORK_TIMEOUT = 1;
+    /** Other network related errors. */
+    public const int ERROR_NETWORK = 2;
+    /** Audio recording error. */
+    public const int ERROR_AUDIO = 3;
+    /** Server sends error status. */
+    public const int ERROR_SERVER = 4;
+    /** Other client side errors. */
+    public const int ERROR_CLIENT = 5;
+    /** No speech input */
+    public const int ERROR_SPEECH_TIMEOUT = 6;
+    /** No recognition result matched. */
+    public const int ERROR_NO_MATCH = 7;
+    /** RecognitionService busy. */
+    public const int ERROR_RECOGNIZER_BUSY = 8;
+    /** Insufficient permissions */
+    public const int ERROR_INSUFFICIENT_PERMISSIONS = 9;
+    /////////////////////
+    String getErrorText(int errorCode)
+    {
+        String message;
+        switch (errorCode)
+        {
+            case ERROR_AUDIO:
+                message = "Audio recording error";
+                break;
+            case ERROR_CLIENT:
+                message = "Client side error";
+                break;
+            case ERROR_INSUFFICIENT_PERMISSIONS:
+                message = "Insufficient permissions";
+                break;
+            case ERROR_NETWORK:
+                message = "Network error";
+                break;
+            case ERROR_NETWORK_TIMEOUT:
+                message = "Network timeout";
+                break;
+            case ERROR_NO_MATCH:
+                message = "No match";
+                break;
+            case ERROR_RECOGNIZER_BUSY:
+                message = "RecognitionService busy";
+                break;
+            case ERROR_SERVER:
+                message = "error from server";
+                break;
+            case ERROR_SPEECH_TIMEOUT:
+                message = "No speech input";
+                break;
+            default:
+                message = "Didn't understand, please try again.";
+                break;
+        }
+        return message;
+    }
+    #endregion
+    public const bool isShowPopupAndroid = true;
+    public Action onReadyForSpeechCallback;
+    public Action onEndOfSpeechCallback;
+    /** Called when the endpointer is ready for the user to start speaking. */
+    public void onReadyForSpeech(string _params)
+    {
+        if (onReadyForSpeechCallback != null)
+            onReadyForSpeechCallback();
+    }
+    /** Called after the user stops speaking. */
+    public void onEndOfSpeech(string _paramsNull)
+    {
+        if (onEndOfSpeechCallback != null)
+            onEndOfSpeechCallback();
+    }
+    /** The sound level in the audio stream has changed. */
+    public void onRmsChanged(string _value)
+    {
+        float _rms = float.Parse(_value);
+    }
+
+    /** The user has started to speak. */
+    public void onBeginningOfSpeech(string _paramsNull)
+    {
+    }
+
+    /** A network or recognition error occurred. */
+    public void onError(string _value)
+    {
+        int _error = int.Parse(_value);
+        string _message = getErrorText(_error);
+        Debug.Log(_message);
+    }
+    /** Called when partial recognition results are available. */
+    public void onPartialResults(string _params)
+    {
+    }
+
+#endif
+    #endregion
 }

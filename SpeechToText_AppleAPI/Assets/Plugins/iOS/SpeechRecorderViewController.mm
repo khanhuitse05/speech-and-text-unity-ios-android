@@ -21,17 +21,19 @@
 
 @implementation SpeechRecorderViewController
 
-
-- (void)InitSpeech{
-    
-    audioEngine = [[AVAudioEngine alloc] init];
+- (id)init
+{
+	self = [super init];	
+	
+	audioEngine = [[AVAudioEngine alloc] init];
     LanguageCode = @"ko-KR";
     NSLocale *local =[[NSLocale alloc] initWithLocaleIdentifier:LanguageCode];
     speechRecognizer = [[SFSpeechRecognizer alloc] initWithLocale:local];
     
-    for (NSLocale *locate in [SFSpeechRecognizer supportedLocales]) {
-        NSLog(@"%@", [locate localizedStringForCountryCode:locate.countryCode]);
-    }
+    //for (NSLocale *locate in [SFSpeechRecognizer supportedLocales]) {
+    //    NSLog(@"%@", [locate localizedStringForCountryCode:locate.countryCode]);
+    //}
+	
     // Check Authorization Status
     // Make sure you add "Privacy - Microphone Usage Description" key and reason in Info.plist to request micro permison
     // And "NSSpeechRecognitionUsageDescription" key for requesting Speech recognize permison
@@ -59,12 +61,16 @@
         });
         
     }];
+	
+	return self;
 }
+
 - (void)SettingSpeech: (const char *) _language 
 {	
     LanguageCode = [NSString stringWithUTF8String:_language];
     NSLocale *local =[[NSLocale alloc] initWithLocaleIdentifier:LanguageCode];
     speechRecognizer = [[SFSpeechRecognizer alloc] initWithLocale:local];
+    UnitySendMessage("SpeechToText", "onMessage", "Setting Success");
 }
 // recording
 - (void)startRecording {
@@ -75,7 +81,7 @@
         }
         		
         AVAudioSession *session = [AVAudioSession sharedInstance];
-        [session setCategory:AVAudioSessionCategoryRecord mode:AVAudioSessionModeMeasurement options:AVAudioSessionCategoryOptionDefaultToSpeaker error:nil];
+        [session setCategory:AVAudioSessionCategoryPlayAndRecord mode:AVAudioSessionModeMeasurement options:AVAudioSessionCategoryOptionDefaultToSpeaker error:nil];
         [session setActive:TRUE withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:nil];
         
         inputNode = audioEngine.inputNode;
@@ -90,29 +96,28 @@
         [audioEngine prepare];
         NSError *error1;
         [audioEngine startAndReturnError:&error1];
-        NSLog(@"errorAudioEngine.description: %@", error1.description);
+        NSLog(@"errorAudioEngine.description: %@", error1.description);		
     }
 }
 
 - (void)stopRecording {
-    if (audioEngine.isRunning) {
-        
-        recognitionTask =[speechRecognizer recognitionTaskWithRequest:recognitionRequest resultHandler:^(SFSpeechRecognitionResult * _Nullable result, NSError * _Nullable error) {
+    if (audioEngine.isRunning) {        
+        recognitionTask =[speechRecognizer recognitionTaskWithRequest:recognitionRequest resultHandler:^(SFSpeechRecognitionResult * _Nullable result, NSError * _Nullable error)
+		{           
             if (result != nil) {
                 NSString *transcriptText = result.bestTranscription.formattedString;
-                UnitySendMessage("SpeechToText", "CallbackSpeechToText", [transcriptText UTF8String]);
-                [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
+                UnitySendMessage("SpeechToText", "onResults", [transcriptText UTF8String]);
+                NSLog(@"STOPRECORDING RESULT: %@", transcriptText);
             }
             else {
-                [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
-                recognitionTask = nil;
-                recognitionRequest = nil;
-				UnitySendMessage("SpeechToText", "CallbackSpeechToText", "Null");
+                UnitySendMessage("SpeechToText", "onResults", "nil");
+                NSLog(@"STOPRECORDING RESULT: %@", "nil");
             }
         }];
-        // make sure you release tap on bus else your app will crash the second time you record.
         [inputNode removeTapOnBus:0];
-        [audioEngine stop];
+		[audioEngine stop];
+		recognitionTask = nil;
+		recognitionRequest = nil;
         [recognitionRequest endAudio];
     }
 }
@@ -122,10 +127,7 @@ extern "C"{
     SpeechRecorderViewController *vc = [[SpeechRecorderViewController alloc] init];
     void _TAG_startRecording(){
         [vc startRecording];
-    }
-    void _TAG_InitSpeech(){
-        [vc InitSpeech];
-    }
+    }    
     void _TAG_stopRecording(){
         [vc stopRecording];
     }  
