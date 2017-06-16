@@ -18,9 +18,9 @@ public class Bridge {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, languageSpeech);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, languageSpeech);
         intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, languageSpeech);
-        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 2000);
-        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 2000);
-        //intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 2000);
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, new Long(5000));
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, new Long(3000));
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, new Long(3000));
         if (prompt != "") intent.putExtra(RecognizerIntent.EXTRA_PROMPT, prompt);
         UnityPlayer.currentActivity.startActivityForResult(intent, RESULT_SPEECH);
     }
