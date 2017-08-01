@@ -1,5 +1,5 @@
-# SpeechAndText Unity iOS Android
-Speed and text in Unity iOS Android
+# Speech And Text in Unity iOS and Unity Android
+Speed to text and text to speed in Unity iOS and Unity Android
 
 ## Native Speech and Text
 * SpeechToText Android: https://developer.android.com/reference/android/speech/package-summary.html
