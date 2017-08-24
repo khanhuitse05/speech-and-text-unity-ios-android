@@ -3,54 +3,32 @@ using System.Collections;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using TextSpeech;
 
-[System.Serializable]
-public class Language
-{
-    public string name;
-    public string code;
-    public string example;
-}
 public class SampleSpeechToText : MonoBehaviour
 {
-    public SpeechToText speech;
-    public TextToSpeech speak;
-    public List<Language> listLanguage;
     public GameObject loading;
-    public GameObject setting;
-    public Text txtResult;
-    public Text txtQuestion;
-    public Text txtStatus;
-    // setting
-    public Dropdown dropSpeech;
-    public Dropdown dropSpeak;
-    public Slider sliderPitch;
-    public Slider sliderRate;
+    public Text txtLog;
+    public InputField inputLocale;
+    public InputField inputText;
+    public float pitch;
+    public float rate;
 
+    public Text txtLocale;
+    public Text txtPitch;
+    public Text txtRate;
     void Start()
     {
-        List<string> _listLanguage = new List<string>();
-        for (int i = 0; i < listLanguage.Count; i++)
-        {
-            _listLanguage.Add(listLanguage[i].name);
-        }
-        dropSpeech.AddOptions(_listLanguage);
-        dropSpeech.value = 0;
-        dropSpeak.AddOptions(_listLanguage);
-        dropSpeak.value = 0;
-        sliderPitch.value = 1;
-        sliderRate.value = 1;
-
-        SaveSetting();
-
-        txtResult.text = "Tap and Hold to Speech";
-
+        Setting("en-US");
         loading.SetActive(false);
-        speech.onResultCallback = OnResultSpeech;
-        txtStatus.text = txtStatus.text + " / Unity Init Finish";
-
+        SpeechToText.instance.onResultCallback = OnResultSpeech;
+        AddLog("Unity Init Finish");
     }
-
+    void AddLog(string log)
+    {
+        txtLog.text += "\n" + log;
+        Debug.Log(log);
+    }
     public void StartRecording()
     {
 #if UNITY_EDITOR
@@ -65,35 +43,32 @@ public class SampleSpeechToText : MonoBehaviour
         OnResultSpeech("Not support in editor.");
 #else
         speech.StopRecording();
-#endif
         loading.SetActive(true);
+#endif
     }
     void OnResultSpeech(string _data)
     {
         loading.SetActive(false);
-        txtResult.text = _data;
-    }
-    void OnMessageSpeech(string _message)
-    {
-        txtStatus.text = txtStatus.text + " / " + _message;
+        inputText.text = _data;
     }
     public void OnClickSpeak()
     {
-        speak.StartSpeak(txtQuestion.text);
+        TextToSpeech.instance.StartSpeak(inputText.text);
     }
     public void  OnClickStopSpeak()
     {
-        speak.StopSpeak();
+        TextToSpeech.instance.StopSpeak();
     }
-    public void OnClickSetting()
+    public void Setting(string code)
     {
-        setting.SetActive(true);
+        TextToSpeech.instance.Setting(code, pitch, rate);
+        SpeechToText.instance.Setting(code);
+        txtLocale.text = "Locale: " + code;
+        txtPitch.text = "Pitch: " + pitch;
+        txtRate.text = "Rate: " + rate;
     }
-    public void SaveSetting()
+    public void OnClickApply()
     {
-        setting.SetActive(false);
-        speak.Setting(listLanguage[dropSpeak.value].code, sliderPitch.value, sliderRate.value);
-        speech.Setting(listLanguage[dropSpeech.value].code);
-        txtQuestion.text = listLanguage[dropSpeak.value].example;
+        Setting(inputLocale.text);
     }
 }

@@ -4,12 +4,41 @@ using System.Runtime.InteropServices;
 using UnityEngine.UI;
 using System;
 
-public class SpeechToText : MonoBehaviour
+namespace TextSpeech
 {
-    public Action<string> onResultCallback;
-
-    public void Setting(string _language)
+    public class SpeechToText : MonoBehaviour
     {
+
+        #region Init
+        static SpeechToText _instance;
+        public static SpeechToText instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    Init();
+                }
+                return _instance;
+            }
+        }
+        public static void Init()
+        {
+            if (instance != null) return;
+            GameObject obj = new GameObject();
+            obj.name = "TextToSpeech";
+            _instance = obj.AddComponent<SpeechToText>();
+        }
+        void Awake()
+        {
+            _instance = this;
+        }
+        #endregion
+
+        public Action<string> onResultCallback;
+
+        public void Setting(string _language)
+        {
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
         _TAG_SettingSpeech(_language);
@@ -17,9 +46,9 @@ public class SpeechToText : MonoBehaviour
         AndroidJavaClass javaUnityClass = new AndroidJavaClass("com.starseed.speechtotext.Bridge");
         javaUnityClass.CallStatic("SettingSpeechToText", _language);
 #endif
-    }
-    public void StartRecording(string _message = "")
-    {
+        }
+        public void StartRecording(string _message = "")
+        {
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
         _TAG_startRecording();
@@ -35,9 +64,9 @@ public class SpeechToText : MonoBehaviour
             javaUnityClass.CallStatic("StartRecording");
         }
 #endif
-    }
-    public void StopRecording()
-    {
+        }
+        public void StopRecording()
+        {
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
         _TAG_stopRecording();
@@ -48,36 +77,36 @@ public class SpeechToText : MonoBehaviour
             javaUnityClass.CallStatic("StopRecording");
         }
 #endif
-    }
+        }
 
 #if UNITY_IPHONE
-    [DllImport("__Internal")]
-    private static extern void _TAG_startRecording();
+        [DllImport("__Internal")]
+        private static extern void _TAG_startRecording();
 
-    [DllImport("__Internal")]
-    private static extern void _TAG_stopRecording();
+        [DllImport("__Internal")]
+        private static extern void _TAG_stopRecording();
 
-    [DllImport("__Internal")]
-    private static extern void _TAG_SettingSpeech(string _language);    
+        [DllImport("__Internal")]
+        private static extern void _TAG_SettingSpeech(string _language);
 #endif
 
-    public void onMessage(string _message)
-    {
-    }
-    public void onErrorMessage(string _message)
-    {
-        Debug.Log(_message);
-    }
-    /** Called when recognition results are ready. */
-    public void onResults(string _results)
-    {
-        if (onResultCallback != null)
-            onResultCallback(_results);
-    }
+        public void onMessage(string _message)
+        {
+        }
+        public void onErrorMessage(string _message)
+        {
+            Debug.Log(_message);
+        }
+        /** Called when recognition results are ready. */
+        public void onResults(string _results)
+        {
+            if (onResultCallback != null)
+                onResultCallback(_results);
+        }
 
-    #region Android STT custom
+        #region Android STT custom
 #if UNITY_ANDROID
-    #region Error Code
+        #region Error Code
     /** Network operation timed out. */
     public const int ERROR_NETWORK_TIMEOUT = 1;
     /** Other network related errors. */
@@ -135,7 +164,7 @@ public class SpeechToText : MonoBehaviour
         }
         return message;
     }
-    #endregion
+        #endregion
     public const bool isShowPopupAndroid = true;
     public Action onReadyForSpeechCallback;
     public Action onEndOfSpeechCallback;
@@ -175,5 +204,6 @@ public class SpeechToText : MonoBehaviour
     }
 
 #endif
-    #endregion
+        #endregion
+    }
 }
