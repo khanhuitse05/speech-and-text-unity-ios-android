@@ -33,7 +33,7 @@ public class SampleSpeechToText : MonoBehaviour
     {
 #if UNITY_EDITOR
 #else
-        speech.StartRecording("Speak any");
+        SpeechToText.instance.StartRecording("Speak any");
 #endif
     }
 
@@ -42,7 +42,7 @@ public class SampleSpeechToText : MonoBehaviour
 #if UNITY_EDITOR
         OnResultSpeech("Not support in editor.");
 #else
-        speech.StopRecording();
+        SpeechToText.instance.StopRecording();
         loading.SetActive(true);
 #endif
     }
