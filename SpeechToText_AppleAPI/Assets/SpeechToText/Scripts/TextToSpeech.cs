@@ -49,7 +49,7 @@ namespace TextSpeech
             rate = _rate;
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
-        _TAG_SettingSpeak(language, pitch, rate);
+        _TAG_SettingSpeak(language, pitch, rate / 2);
 #elif UNITY_ANDROID
         AndroidJavaClass javaUnityClass = new AndroidJavaClass("com.starseed.speechtotext.Bridge");
         javaUnityClass.CallStatic("SettingTextToSpeed", language, pitch, rate);

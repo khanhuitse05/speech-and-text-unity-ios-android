@@ -111,7 +111,7 @@
             }
             else {
                 UnitySendMessage("SpeechToText", "onResults", "nil");
-                NSLog(@"STOPRECORDING RESULT: %@", "nil");
+                NSLog(@"STOPRECORDING RESULT: %s", "nil");
             }
         }];
         [inputNode removeTapOnBus:0];
