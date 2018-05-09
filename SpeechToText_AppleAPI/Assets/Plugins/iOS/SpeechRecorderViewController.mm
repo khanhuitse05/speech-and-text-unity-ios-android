@@ -110,14 +110,15 @@
                 NSLog(@"STOPRECORDING RESULT: %@", transcriptText);
             }
             else {
+				[audioEngine stop];
+				recognitionTask = nil;
+				recognitionRequest = nil;
                 UnitySendMessage("SpeechToText", "onResults", "nil");
-                NSLog(@"STOPRECORDING RESULT: %s", "nil");
+                NSLog(@"STOPRECORDING RESULT NULL");
             }
         }];
         [inputNode removeTapOnBus:0];
 		[audioEngine stop];
-		recognitionTask = nil;
-		recognitionRequest = nil;
         [recognitionRequest endAudio];
     }
 }
