@@ -1,5 +1,6 @@
 # Speech And Text in Unity iOS and Unity Android
 Speed to text and text to speed in Unity iOS and Unity Android
+I have provide all java and object c source. you can know how it work, optimization, or add any features
 
 ## Native Speech and Text
 * SpeechToText Android: https://developer.android.com/reference/android/speech/package-summary.html
@@ -7,6 +8,14 @@ Speed to text and text to speed in Unity iOS and Unity Android
 * SpeechToText iOS: https://developer.apple.com/reference/speech
 * TextToSpeech iOS: https://developer.apple.com/reference/avfoundation
 
+## Android
+* Hide default android popup
+```
+class SpeechToText
+{
+      public const bool isShowPopupAndroid = false;
+      ...
+```
 ## Tutorial Config in Xcode
 * Requires Xcode8 or higher. Target iOS 10.0
 * Add farmwork
