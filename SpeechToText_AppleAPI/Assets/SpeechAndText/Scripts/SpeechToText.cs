@@ -165,7 +165,7 @@ namespace TextSpeech
         return message;
     }
         #endregion
-    public const bool isShowPopupAndroid = true;
+    public bool isShowPopupAndroid = true;
     public Action onReadyForSpeechCallback;
     public Action onEndOfSpeechCallback;
     /** Called when the endpointer is ready for the user to start speaking. */
