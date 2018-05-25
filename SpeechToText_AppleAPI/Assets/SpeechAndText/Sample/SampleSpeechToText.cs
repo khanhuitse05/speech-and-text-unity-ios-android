@@ -1,14 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
-using System;
-using System.Collections.Generic;
 using TextSpeech;
 
 public class SampleSpeechToText : MonoBehaviour
 {
     public GameObject loading;
-    public Text txtLog;
     public InputField inputLocale;
     public InputField inputText;
     public float pitch;
@@ -22,13 +18,10 @@ public class SampleSpeechToText : MonoBehaviour
         Setting("en-US");
         loading.SetActive(false);
         SpeechToText.instance.onResultCallback = OnResultSpeech;
-        AddLog("Unity Init Finish");
+
     }
-    void AddLog(string log)
-    {
-        txtLog.text += "\n" + log;
-        Debug.Log(log);
-    }
+    
+
     public void StartRecording()
     {
 #if UNITY_EDITOR
@@ -43,13 +36,17 @@ public class SampleSpeechToText : MonoBehaviour
         OnResultSpeech("Not support in editor.");
 #else
         SpeechToText.instance.StopRecording();
+#endif
+#if UNITY_IOS
         loading.SetActive(true);
 #endif
     }
     void OnResultSpeech(string _data)
     {
-        loading.SetActive(false);
         inputText.text = _data;
+#if UNITY_IOS
+        loading.SetActive(false);
+#endif
     }
     public void OnClickSpeak()
     {

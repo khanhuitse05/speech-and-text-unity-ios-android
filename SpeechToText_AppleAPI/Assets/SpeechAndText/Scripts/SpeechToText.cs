@@ -107,101 +107,114 @@ namespace TextSpeech
         #region Android STT custom
 #if UNITY_ANDROID
         #region Error Code
-    /** Network operation timed out. */
-    public const int ERROR_NETWORK_TIMEOUT = 1;
-    /** Other network related errors. */
-    public const int ERROR_NETWORK = 2;
-    /** Audio recording error. */
-    public const int ERROR_AUDIO = 3;
-    /** Server sends error status. */
-    public const int ERROR_SERVER = 4;
-    /** Other client side errors. */
-    public const int ERROR_CLIENT = 5;
-    /** No speech input */
-    public const int ERROR_SPEECH_TIMEOUT = 6;
-    /** No recognition result matched. */
-    public const int ERROR_NO_MATCH = 7;
-    /** RecognitionService busy. */
-    public const int ERROR_RECOGNIZER_BUSY = 8;
-    /** Insufficient permissions */
-    public const int ERROR_INSUFFICIENT_PERMISSIONS = 9;
-    /////////////////////
-    String getErrorText(int errorCode)
-    {
-        String message;
-        switch (errorCode)
+        /** Network operation timed out. */
+        public const int ERROR_NETWORK_TIMEOUT = 1;
+        /** Other network related errors. */
+        public const int ERROR_NETWORK = 2;
+        /** Audio recording error. */
+        public const int ERROR_AUDIO = 3;
+        /** Server sends error status. */
+        public const int ERROR_SERVER = 4;
+        /** Other client side errors. */
+        public const int ERROR_CLIENT = 5;
+        /** No speech input */
+        public const int ERROR_SPEECH_TIMEOUT = 6;
+        /** No recognition result matched. */
+        public const int ERROR_NO_MATCH = 7;
+        /** RecognitionService busy. */
+        public const int ERROR_RECOGNIZER_BUSY = 8;
+        /** Insufficient permissions */
+        public const int ERROR_INSUFFICIENT_PERMISSIONS = 9;
+        /////////////////////
+        String getErrorText(int errorCode)
         {
-            case ERROR_AUDIO:
-                message = "Audio recording error";
-                break;
-            case ERROR_CLIENT:
-                message = "Client side error";
-                break;
-            case ERROR_INSUFFICIENT_PERMISSIONS:
-                message = "Insufficient permissions";
-                break;
-            case ERROR_NETWORK:
-                message = "Network error";
-                break;
-            case ERROR_NETWORK_TIMEOUT:
-                message = "Network timeout";
-                break;
-            case ERROR_NO_MATCH:
-                message = "No match";
-                break;
-            case ERROR_RECOGNIZER_BUSY:
-                message = "RecognitionService busy";
-                break;
-            case ERROR_SERVER:
-                message = "error from server";
-                break;
-            case ERROR_SPEECH_TIMEOUT:
-                message = "No speech input";
-                break;
-            default:
-                message = "Didn't understand, please try again.";
-                break;
+            String message;
+            switch (errorCode)
+            {
+                case ERROR_AUDIO:
+                    message = "Audio recording error";
+                    break;
+                case ERROR_CLIENT:
+                    message = "Client side error";
+                    break;
+                case ERROR_INSUFFICIENT_PERMISSIONS:
+                    message = "Insufficient permissions";
+                    break;
+                case ERROR_NETWORK:
+                    message = "Network error";
+                    break;
+                case ERROR_NETWORK_TIMEOUT:
+                    message = "Network timeout";
+                    break;
+                case ERROR_NO_MATCH:
+                    message = "No match";
+                    break;
+                case ERROR_RECOGNIZER_BUSY:
+                    message = "RecognitionService busy";
+                    break;
+                case ERROR_SERVER:
+                    message = "error from server";
+                    break;
+                case ERROR_SPEECH_TIMEOUT:
+                    message = "No speech input";
+                    break;
+                default:
+                    message = "Didn't understand, please try again.";
+                    break;
+            }
+            return message;
         }
-        return message;
-    }
         #endregion
-    public bool isShowPopupAndroid = true;
-    public Action onReadyForSpeechCallback;
-    public Action onEndOfSpeechCallback;
-    /** Called when the endpointer is ready for the user to start speaking. */
-    public void onReadyForSpeech(string _params)
-    {
-        if (onReadyForSpeechCallback != null)
-            onReadyForSpeechCallback();
-    }
-    /** Called after the user stops speaking. */
-    public void onEndOfSpeech(string _paramsNull)
-    {
-        if (onEndOfSpeechCallback != null)
-            onEndOfSpeechCallback();
-    }
-    /** The sound level in the audio stream has changed. */
-    public void onRmsChanged(string _value)
-    {
-        float _rms = float.Parse(_value);
-    }
+        public bool isShowPopupAndroid = true;
+        public Action<string> onReadyForSpeechCallback;
+        public Action onEndOfSpeechCallback;
+        public Action<float> onRmsChangedCallback;
+        public Action onBeginningOfSpeechCallback;
+        public Action<string> onErrorCallback;
+        public Action<string> onPartialResultsCallback;
+        /** Called when the endpointer is ready for the user to start speaking. */
+        public void onReadyForSpeech(string _params)
+        {
+            if (onReadyForSpeechCallback != null)
+                onReadyForSpeechCallback(_params);
+        }
+        /** Called after the user stops speaking. */
+        public void onEndOfSpeech(string _paramsNull)
+        {
+            if (onEndOfSpeechCallback != null)
+                onEndOfSpeechCallback();
+        }
+        /** The sound level in the audio stream has changed. */
+        public void onRmsChanged(string _value)
+        {
+            float _rms = float.Parse(_value);
+            if (onRmsChangedCallback != null)
+                onRmsChangedCallback(_rms);
+        }
 
-    /** The user has started to speak. */
-    public void onBeginningOfSpeech(string _paramsNull)
-    {
-    }
+        /** The user has started to speak. */
+        public void onBeginningOfSpeech(string _paramsNull)
+        {
+            if (onBeginningOfSpeechCallback != null)
+                onBeginningOfSpeechCallback();
+        }
 
-    /** A network or recognition error occurred. */
-    public void onError(string _value)
-    {
-        int _error = int.Parse(_value);
-        string _message = getErrorText(_error);
-        Debug.Log(_message);
-    }
-    /** Called when partial recognition results are available. */
-    public void onPartialResults(string _params)
-    {
-    }
+        /** A network or recognition error occurred. */
+        public void onError(string _value)
+        {
+            int _error = int.Parse(_value);
+            string _message = getErrorText(_error);
+            Debug.Log(_message);
+
+            if (onErrorCallback != null)
+                onErrorCallback(_message);
+        }
+        /** Called when partial recognition results are available. */
+        public void onPartialResults(string _params)
+        {
+            if (onPartialResultsCallback != null)
+                onPartialResultsCallback(_params);
+        }
 
 #endif
         #endregion
