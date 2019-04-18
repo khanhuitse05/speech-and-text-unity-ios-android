@@ -9,7 +9,7 @@ I have provide all java and object c source. you can know how it work, optimizat
 * TextToSpeech iOS: https://developer.apple.com/reference/avfoundation
 
 ## Android
-* Hide default android popup
+* Hide default android popup, there's a bool to enable and disable if you don't want the popup to show up.
 ```
 class SpeechToText
 {
