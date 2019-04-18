@@ -56,6 +56,6 @@ public class AndroidDebug : MonoBehaviour
     }
     void onPartialResultsCallback(string _params)
     {
-        AddLog("Partial recognition results are available");
+        AddLog("Partial recognition results are available " + _params);
     }
 }
