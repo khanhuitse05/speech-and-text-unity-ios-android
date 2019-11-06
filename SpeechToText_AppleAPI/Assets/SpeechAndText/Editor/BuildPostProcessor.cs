@@ -1,27 +1,11 @@
-//
-// Copyright (c) 2017 eppz! mobile, Gergely Borbás (SP)
-//
-// http://www.twitter.com/_eppz
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-// INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-// PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-// CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
-// OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
-
+//This is a modified version of https://gist.github.com/eppz/1ebbc1cf6a77741f56d63d3803e57ba3
 using System.IO;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.iOS.Xcode;
 
-
-
 public class BuildPostProcessor
 {
-
-
     [PostProcessBuildAttribute(1)]
     public static void OnPostProcessBuild(BuildTarget target, string path)
     {
@@ -35,6 +19,12 @@ public class BuildPostProcessor
             string targetGUID = project.TargetGuidByName(targetName);
 
             AddFrameworks(project, targetGUID);
+            
+            var plistPath = Path.Combine(path, "Info.plist");
+            var plist = new PlistDocument();
+            plist.ReadFromFile(plistPath);
+            plist.root.SetString("NSSpeechRecognitionUsageDescription", "This app needs access to Speech Recognition");
+            plist.WriteToFile(plistPath);
 
             // Write.
             File.WriteAllText(projectPath, project.WriteToString());
@@ -43,17 +33,9 @@ public class BuildPostProcessor
 
     static void AddFrameworks(PBXProject project, string targetGUID)
     {
-        
         project.AddFrameworkToProject(targetGUID, "speech.framework", false);
-        
-        // Frameworks (eppz! Photos, Google Analytics).
-//        project.AddFrameworkToProject(targetGUID, "MessageUI.framework", false);
-//        project.AddFrameworkToProject(targetGUID, "AdSupport.framework", false);
-//        project.AddFrameworkToProject(targetGUID, "CoreData.framework", false);
-//        project.AddFrameworkToProject(targetGUID, "SystemConfiguration.framework", false);
-//        project.AddFrameworkToProject(targetGUID, "libz.dylib", false);
-//        project.AddFrameworkToProject(targetGUID, "libsqlite3.tbd", false);
-
+        //This project appears to be a default now:
+        //project.AddFrameworkToProject(targetGUID, "AVFoundation.framework", false);
         // Add `-ObjC` to "Other Linker Flags".
         project.AddBuildProperty(targetGUID, "OTHER_LDFLAGS", "-ObjC");
     }
