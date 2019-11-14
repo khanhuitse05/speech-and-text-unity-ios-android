@@ -33,7 +33,7 @@ public class BuildPostProcessor
 
     static void AddFrameworks(PBXProject project, string targetGUID)
     {
-        project.AddFrameworkToProject(targetGUID, "speech.framework", false);
+        project.AddFrameworkToProject(targetGUID, "Speech.framework", false);
         //This project appears to be a default now:
         //project.AddFrameworkToProject(targetGUID, "AVFoundation.framework", false);
         // Add `-ObjC` to "Other Linker Flags".
