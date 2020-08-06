@@ -16,12 +16,11 @@ public class BuildPostProcessor
             PBXProject project = new PBXProject();
             project.ReadFromString(File.ReadAllText(projectPath));
 #if UNITY_2019_3_OR_NEWER
-            string targetName = project.GetUnityMainTargetGuid();
+            string targetGUID = project.GetUnityMainTargetGuid();
 #else
             string targetName = PBXProject.GetUnityTargetName();
-#endif
             string targetGUID = project.TargetGuidByName(targetName);
-
+#endif
             AddFrameworks(project, targetGUID);
             
             var plistPath = Path.Combine(path, "Info.plist");
