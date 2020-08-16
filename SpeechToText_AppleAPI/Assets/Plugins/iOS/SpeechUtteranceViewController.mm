@@ -15,7 +15,6 @@
 
 - (id)init
 {
-    self = [super init];
     speechSynthesizer = [[AVSpeechSynthesizer alloc] init];
     speechSynthesizer.delegate = self;
     return self;

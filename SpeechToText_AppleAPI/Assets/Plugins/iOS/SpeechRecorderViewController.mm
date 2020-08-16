@@ -23,8 +23,6 @@
 
 - (id)init
 {
-	self = [super init];	
-	
 	audioEngine = [[AVAudioEngine alloc] init];
     LanguageCode = @"ko-KR";
     NSLocale *local =[[NSLocale alloc] initWithLocaleIdentifier:LanguageCode];
