@@ -73,6 +73,7 @@
 // recording
 - (void)startRecording {
     if (!audioEngine.isRunning) {
+        [inputNode removeTapOnBus:0];
         if (recognitionTask) {
             [recognitionTask cancel];
             recognitionTask = nil;
