@@ -3,20 +3,21 @@
 
 @interface SpeechUtteranceViewController () <AVSpeechSynthesizerDelegate>
 {
-    AVSpeechSynthesizer *speechSynthesizer;
     NSString * speakText;
     NSString * LanguageCode;
     float pitch;
     float rate;
 }
+@property (nonatomic, retain) AVSpeechSynthesizer *speechSynthesizer;
 @end
 
 @implementation SpeechUtteranceViewController
 
 - (id)init
 {
-    speechSynthesizer = [[AVSpeechSynthesizer alloc] init];
-    speechSynthesizer.delegate = self;
+    self = [super init];
+    self.speechSynthesizer = [[AVSpeechSynthesizer alloc] init];
+    self.speechSynthesizer.delegate = self;
     return self;
 }
 - (void)SettingSpeak: (const char *) _language pitchSpeak: (float)_pitch rateSpeak:(float)_rate
@@ -28,7 +29,7 @@
 }
 - (void)StartSpeak: (const char *) _text
 {
-    if([speechSynthesizer isSpeaking] == false) {
+    if([self.speechSynthesizer isSpeaking] == false) {
         speakText = [NSString stringWithUTF8String:_text];
         NSLog(@"%@", speakText);
         AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:speakText];
@@ -38,13 +39,13 @@
         utterance.preUtteranceDelay = 0.2f;
         utterance.postUtteranceDelay = 0.2f;
 
-        [speechSynthesizer speakUtterance:utterance];
+        [self.speechSynthesizer speakUtterance:utterance];
     }
 }
 - (void)StopSpeak
 {
-    if([speechSynthesizer isSpeaking]) {
-        [speechSynthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
+    if([self.speechSynthesizer isSpeaking]) {
+        [self.speechSynthesizer stopSpeakingAtBoundary:AVSpeechBoundaryImmediate];
     }
 }
 
@@ -71,14 +72,27 @@ didStartSpeechUtterance:(AVSpeechUtterance *)utterance
 @end
 
 extern "C"{
-    SpeechUtteranceViewController *su = [[SpeechUtteranceViewController alloc] init];
+
+    SpeechUtteranceViewController *su = nil;
+
+    SpeechUtteranceViewController * getSu() {
+        if (su == nil) {
+            su = [[SpeechUtteranceViewController alloc] init];
+        }
+        
+        return su;
+    }
+
     void _TAG_StartSpeak(const char * _text){
-        [su StartSpeak:_text];
+        SpeechUtteranceViewController *pSu = getSu();
+        [pSu StartSpeak:_text];
     }
     void _TAG_StopSpeak(){
-        [su StopSpeak];
+        SpeechUtteranceViewController *pSu = getSu();
+        [pSu StopSpeak];
     }
     void _TAG_SettingSpeak(const char * _language, float _pitch, float _rate){
-        [su SettingSpeak:_language pitchSpeak:_pitch rateSpeak:_rate];
+        SpeechUtteranceViewController *pSu = getSu();
+        [pSu SettingSpeak:_language pitchSpeak:_pitch rateSpeak:_rate];
     }
 }
