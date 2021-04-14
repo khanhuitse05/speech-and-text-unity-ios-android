@@ -34,7 +34,7 @@ namespace TextSpeech
         }
         #endregion
 
-        public Action onStartCallBack;
+        public Action onStartCallback;
         public Action onDoneCallback;
         public Action<string> onSpeakRangeCallback;
 
@@ -85,8 +85,8 @@ namespace TextSpeech
         }
         public void onStart(string _message)
         {
-            if (onStartCallBack != null)
-                onStartCallBack();
+            if (onStartCallback != null)
+                onStartCallback();
         }
         public void onDone(string _message)
         {
