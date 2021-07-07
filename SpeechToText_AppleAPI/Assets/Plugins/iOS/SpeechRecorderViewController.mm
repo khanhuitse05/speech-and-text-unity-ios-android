@@ -130,14 +130,26 @@
 
 @end
 extern "C"{
-    SpeechRecorderViewController *vc = [[SpeechRecorderViewController alloc] init];
+    SpeechRecorderViewController *vc = nil;
+    
+    SpeechRecorderViewController *getVc() {
+        if (vc == nil) {
+            vc = [[SpeechRecorderViewController alloc] init];
+        }
+        
+        return vc;
+    }
+    
     void _TAG_startRecording(){
-        [vc startRecording];
-    }    
+        SpeechRecorderViewController *pVc = getVc();
+        [pVc startRecording];
+    }
     void _TAG_stopRecording(){
-        [vc stopRecording];
-    }  
-	void _TAG_SettingSpeech(const char * _language){
-        [vc SettingSpeech:_language];
-    } 	
+        SpeechRecorderViewController *pVc = getVc();
+        [pVc stopRecording];
+    }
+    void _TAG_SettingSpeech(const char * _language){
+        SpeechRecorderViewController *pVc = getVc();
+        [pVc SettingSpeech:_language];
+    }
 }
