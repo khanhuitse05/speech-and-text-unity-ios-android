@@ -1,0 +1,43 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 31
+    buildToolsVersion "30.0.3"
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    api 'androidx.appcompat:appcompat:1.4.2'
+    api 'com.google.android.material:material:1.6.1'
+    compile files('libs/classes.jar')
+}
+
+//task to delete the old jar
+task deleteOldJar(type: Delete) {
+    delete 'release/SpeechToTextPlugin.jar'
+}
+
+//task to export content as jar
+task exportJar(type: Copy) {
+    from('build/intermediates/aar_main_jar/release/')
+    into('release/')
+    include('classes.jar')
+    rename('classes.jar', 'SpeechToTextPlugin.jar')
+}
+
+exportJar.dependsOn(deleteOldJar, build)
