@@ -58,11 +58,11 @@ public class SampleSpeechToText : MonoBehaviour
     }
     public void Setting(string code)
     {
-        TextToSpeech.instance.Setting(code, pitch, rate);
-        SpeechToText.instance.Setting(code);
         txtLocale.text = "Locale: " + code;
         txtPitch.text = "Pitch: " + pitch;
         txtRate.text = "Rate: " + rate;
+        SpeechToText.instance.Setting(code);
+        TextToSpeech.instance.Setting(code, pitch, rate);
     }
     public void OnClickApply()
     {

@@ -125,7 +125,7 @@ public class MainActivity extends UnityPlayerActivity
     ////
     public  void OnStartSpeak(String valueText)
     {
-        tts.speak(valueText,TextToSpeech.QUEUE_FLUSH,null,valueText);
+        tts.speak(valueText, TextToSpeech.QUEUE_FLUSH, null, valueText);
     }
     public void OnSettingSpeak(String language, float pitch, float rate) {
         tts.setPitch(pitch);
@@ -144,11 +144,12 @@ public class MainActivity extends UnityPlayerActivity
         public void onInit(int status) {
             if (status == TextToSpeech.SUCCESS)
             {
-                OnSettingSpeak(Locale.KOREA.toString(), 1.0f, 1.0f);
+                OnSettingSpeak(Locale.US.toString(), 1.0f, 1.0f);
                 tts.setOnUtteranceProgressListener(utteranceProgressListener);
             }
         }
     };
+
     UtteranceProgressListener utteranceProgressListener=new UtteranceProgressListener() {
         @Override
         public void onStart(String utteranceId) {
