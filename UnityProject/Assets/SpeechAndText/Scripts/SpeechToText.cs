@@ -10,25 +10,23 @@ namespace TextSpeech
     {
 
         #region Init
-        static SpeechToText _instance;
-        public static SpeechToText instance
+        private static SpeechToText _instance;
+        public static SpeechToText Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    Init();
+                    //Create if it doesn't exist
+                    GameObject go = new GameObject("SpeechToText");
+                    _instance = go.AddComponent<SpeechToText>();
                 }
                 return _instance;
             }
         }
-        public static void Init()
-        {
-            if (_instance != null) return;
-            GameObject obj = new GameObject();
-            obj.name = "TextToSpeech";
-            _instance = obj.AddComponent<SpeechToText>();
-        }
+        public bool isShowPopupAndroid = true;
+
+
         void Awake()
         {
             _instance = this;
@@ -165,7 +163,7 @@ namespace TextSpeech
             return message;
         }
         #endregion
-        public bool isShowPopupAndroid = true;
+
         public Action<string> onReadyForSpeechCallback;
         public Action onEndOfSpeechCallback;
         public Action<float> onRmsChangedCallback;

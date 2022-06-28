@@ -9,25 +9,21 @@ namespace TextSpeech
     public class TextToSpeech : MonoBehaviour
     {
         #region Init
-        static TextToSpeech _instance;
-        public static TextToSpeech instance
+        private static TextToSpeech _instance;
+        public static TextToSpeech Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    Init();
+                        //Create if it doesn't exist
+                    GameObject go = new GameObject("TextToSpeech");
+                    _instance = go.AddComponent<TextToSpeech>();
                 }
                 return _instance;
             }
         }
-        public static void Init()
-        {
-            if (instance != null) return;
-            GameObject obj = new GameObject();
-            obj.name = "TextToSpeech";
-            _instance = obj.AddComponent<TextToSpeech>();
-        }
+
         void Awake()
         {
             _instance = this;

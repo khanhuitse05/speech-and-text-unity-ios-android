@@ -9,14 +9,14 @@ public class AndroidDebug : MonoBehaviour
     public RectTransform RmsBar;
     void Start()
     {
-        SpeechToText.instance.onResultCallback = onResultCallback;
+        SpeechToText.Instance.onResultCallback = onResultCallback;
 #if UNITY_ANDROID
-        SpeechToText.instance.onReadyForSpeechCallback = onReadyForSpeechCallback;
-        SpeechToText.instance.onEndOfSpeechCallback = onEndOfSpeechCallback;
-        SpeechToText.instance.onRmsChangedCallback = onRmsChangedCallback;
-        SpeechToText.instance.onBeginningOfSpeechCallback = onBeginningOfSpeechCallback;
-        SpeechToText.instance.onErrorCallback = onErrorCallback;
-        SpeechToText.instance.onPartialResultsCallback = onPartialResultsCallback;
+        SpeechToText.Instance.onReadyForSpeechCallback = onReadyForSpeechCallback;
+        SpeechToText.Instance.onEndOfSpeechCallback = onEndOfSpeechCallback;
+        SpeechToText.Instance.onRmsChangedCallback = onRmsChangedCallback;
+        SpeechToText.Instance.onBeginningOfSpeechCallback = onBeginningOfSpeechCallback;
+        SpeechToText.Instance.onErrorCallback = onErrorCallback;
+        SpeechToText.Instance.onPartialResultsCallback = onPartialResultsCallback;
 #else
         gameObject.SetActive(false);
 #endif
