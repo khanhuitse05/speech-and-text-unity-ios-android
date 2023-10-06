@@ -19,7 +19,7 @@ class SpeechToText
 * Merge file AndroidManifest (If you want skip the default popup)
 ## Tutorial Config in Xcode
 * Requires Xcode8 or higher. Target iOS 10.0
-* Add farmwork
+* Add frameworks
 
       - speech.farmwork
       - AVFoundation.framework
