@@ -66,18 +66,6 @@ public class MainActivity extends UnityPlayerActivity
         //intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 2000);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.getPackageName());
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
-        //onLog("test");
-
-        /*Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, languageSpeech);
-        intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, languageSpeech);
-        intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, languageSpeech);
-        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, Long.valueOf(5000));
-        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, Long.valueOf(3000));
-        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, Long.valueOf(3000));
-        if (!prompt.equals("")) intent.putExtra(RecognizerIntent.EXTRA_PROMPT, prompt);
-        UnityPlayer.currentActivity.startActivityForResult(intent, RESULT_SPEECH);*/
 
         this.runOnUiThread(new Runnable() {
 
@@ -111,7 +99,7 @@ public class MainActivity extends UnityPlayerActivity
         }
         @Override
         public void onRmsChanged(float rmsdB) {
-            //UnityPlayer.UnitySendMessage("SpeechToText", "onRmsChanged", "" + rmsdB);
+            UnityPlayer.UnitySendMessage("SpeechToText", "onRmsChanged", "" + rmsdB);
         }
         @Override
         public void onBufferReceived(byte[] buffer) {
