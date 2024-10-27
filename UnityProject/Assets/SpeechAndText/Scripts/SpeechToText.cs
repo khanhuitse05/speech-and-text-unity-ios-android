@@ -34,6 +34,8 @@ namespace TextSpeech
         #endregion
 
         public Action<string> onResultCallback;
+        public Action<string> onPartialResultsCallback;
+
 
         public void Setting(string _language)
         {
@@ -102,6 +104,15 @@ namespace TextSpeech
                 onResultCallback(_results);
         }
 
+        /** Called when partial recognition results are available. */
+        public void onPartialResults(string _params)
+        {
+            if (onPartialResultsCallback != null)
+                onPartialResultsCallback(_params);
+        }
+
+
+
         #region Android STT custom
 #if UNITY_ANDROID
         #region Error Code
@@ -169,7 +180,6 @@ namespace TextSpeech
         public Action<float> onRmsChangedCallback;
         public Action onBeginningOfSpeechCallback;
         public Action<string> onErrorCallback;
-        public Action<string> onPartialResultsCallback;
         /** Called when the endpointer is ready for the user to start speaking. */
         public void onReadyForSpeech(string _params)
         {
@@ -207,12 +217,7 @@ namespace TextSpeech
             if (onErrorCallback != null)
                 onErrorCallback(_message);
         }
-        /** Called when partial recognition results are available. */
-        public void onPartialResults(string _params)
-        {
-            if (onPartialResultsCallback != null)
-                onPartialResultsCallback(_params);
-        }
+
 
 #endif
         #endregion
