@@ -1,17 +1,17 @@
 package com.starseed.speechtotext;
 
-import android.content.Intent;
+import android.util.Log;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
+import android.content.Intent;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.speech.RecognitionListener;
 import android.speech.tts.UtteranceProgressListener;
 import com.unity3d.player.UnityPlayer;
 import com.unity3d.player.UnityPlayerActivity;
-import java.util.ArrayList;
 import java.util.Locale;
-
+import java.util.ArrayList;
 
 public class MainActivity extends UnityPlayerActivity
 {
@@ -40,10 +40,17 @@ public class MainActivity extends UnityPlayerActivity
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        //super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && null != data) {
-            ArrayList<String> text = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            UnityPlayer.UnitySendMessage("SpeechToText", "onResults", text.get(0));
+            try
+            {
+                ArrayList<String> text = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                UnityPlayer.UnitySendMessage("SpeechToText", "onResults", text.get(0));
+            }
+            catch(NullPointerException e)
+            {
+                Log.i("SpeechToText", "NullPointerException from onActivityResult: " + e.getMessage());
+            }
         }
     }
 
@@ -53,6 +60,7 @@ public class MainActivity extends UnityPlayerActivity
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, Bridge.languageSpeech);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Bridge.languageSpeech);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Bridge.languageSpeech);
+        intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
         //intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 2000);
         intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 2000);
         //intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 2000);
@@ -80,6 +88,7 @@ public class MainActivity extends UnityPlayerActivity
     }
 
     RecognitionListener recognitionListener = new RecognitionListener() {
+
         @Override
         public void onReadyForSpeech(Bundle params) {
             UnityPlayer.UnitySendMessage("SpeechToText", "onReadyForSpeech", params.toString());
@@ -106,13 +115,33 @@ public class MainActivity extends UnityPlayerActivity
         }
         @Override
         public void onResults(Bundle results) {
-            ArrayList<String> text = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            UnityPlayer.UnitySendMessage("SpeechToText", "onResults", text.get(0));
+            try
+            {
+                ArrayList<String> text = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                UnityPlayer.UnitySendMessage("SpeechToText", "onResults", text.get(0));
+            }
+            catch (NullPointerException e)
+            {
+                Log.i("SpeechToText", "NullPointerException from onResults: " + e.getMessage());
+            }
+
+            UnityPlayer.UnitySendMessage("SpeechToText", "onResults", "");
         }
         @Override
         public void onPartialResults(Bundle partialResults) {
-            ArrayList<String> text = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            UnityPlayer.UnitySendMessage("SpeechToText", "onPartialResults", text.get(0));
+            try
+            {
+                ArrayList<String> text = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                UnityPlayer.UnitySendMessage("SpeechToText", "onPartialResults", text.get(0));
+            }
+            catch(NullPointerException e)
+            {
+                Log.i("SpeechToText", "NullPointerException from onPartialResults: " + e.getMessage());
+            }
+            catch(IndexOutOfBoundsException i)
+            {
+                Log.i("SpeechToText", "IndexOutOfBoundsException from onPartialResults: " + i.getMessage());
+            }
         }
         @Override
         public void onEvent(int eventType, Bundle params) {
